@@ -56,7 +56,6 @@ export default {
     item: Object
   },
   data() {
-    console.log('itemmmmmmmmmmmmmm', this.item)
     return{
      id:""
     }

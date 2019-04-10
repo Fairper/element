@@ -23,8 +23,6 @@ export default {
     //监听传过来的数据
     restaurantlist() {
       this.restaurantList = this.restaurantlist || [];
-      console.log(1111);
-      console.log(this.restaurantList);
     }
   }
 };

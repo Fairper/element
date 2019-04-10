@@ -1,19 +1,28 @@
 <template>
   <a href="##">
     <div>
-     <img :src="item.image_hash | replaceImg ">
+     <img :src="icon[item.i]">
     </div>
         <!-- <img :src="item.img | replaceWH('128.180')" onerror="this.style.visibility='hidden'">		 -->
     <span>
-      {{item.name}}
+      {{item.item.name}}
     </span>
   </a>
 </template>
 
 <script>
+import iconUrl from '@/mock/icon.json'
 export default {
   props:{
     item:Object
+  },
+  mounted () {
+    this.icon = iconUrl
+  },
+  data () {
+    return {
+      icon: []
+    }
   },
   filters:{
     replaceImg(value){

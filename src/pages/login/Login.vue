@@ -63,7 +63,7 @@
 import store from '../../store/store'
 import http from "utils/http";
 import {userLogin, userSignup} from '@/api/login'
-  import { Toast } from 'mint-ui';
+import { Toast } from 'mint-ui';
   export default {
     data () {
       return {
@@ -112,12 +112,6 @@ import {userLogin, userSignup} from '@/api/login'
 						} else {
 							this.loginWay = false
 						}
-						// const user = {username, password}
-						// // 将user保存到vuex的state
-						// this.$store.dispatch('recordUser', user)
-						// console.log('thisssss', store.state.userInfo)
-						// // 去个人中心界面
-						// this.$router.replace('/home/mine')
 					} else {
 						this.showAlert(res.data.data.msg)
 					}

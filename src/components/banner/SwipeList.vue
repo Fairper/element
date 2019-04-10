@@ -5,12 +5,12 @@
   <mt-swipe-item>
   <!-- <a href="" v-for="value in 10">{{value}}</a> -->
     <div class="Div">
-     <banner-item :item="item" v-for="item of this.arr1" :key="item.id"></banner-item>
+     <banner-item :item="{item, i}" v-for="(item, i) of this.arr1" :key="item.id"></banner-item>
     </div>
   </mt-swipe-item>
-  <mt-swipe-item>
+  <mt-swipe-item v-if="banner.length > 10">
     <div class="Div">
-     <banner-item :item="item" v-for="item of this.arr2" :key="item.id"></banner-item>
+     <banner-item :item="{item, i}" v-for="(item, i) of this.arr2" :key="item.id"></banner-item>
     </div>
   </mt-swipe-item>
   
@@ -32,6 +32,7 @@ export default {
     BannerItem
   },
   data() {
+    console.log('banner', this.banner)
     return {
       bannerOne: [],
       num: "",
@@ -41,11 +42,10 @@ export default {
   },
   watch: {
     banner() {
-      this.bannerOne = (this.banner && this.banner[0].entries) || [];
+      this.bannerOne = this.banner || [];
       this.arr1 = this.bannerOne.slice(0, 10);
       this.arr2 = this.bannerOne.slice(10);
       this.num = this.bannerOne.length % 10;
-      
     }
   }
 };

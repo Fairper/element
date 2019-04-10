@@ -30,6 +30,8 @@
 //暂且写静态的,滚动事件后面处理,
 //当前页面进行网络数据请求，将banner图的数据传递给
 //swiper组件
+import {getCookStyle} from '@/api/home'
+import { Toast } from 'mint-ui';
 import {mapState} from 'vuex';
 import http from "utils/http";
 import axios from "axios";
@@ -111,21 +113,27 @@ export default {
 					for(var i = keys.length; i--;)
 						document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString()
 				}
-    let result = await http({
-      method: "get",
-      url:
-        "/restapi/shopping/v2/entries?latitude=31.23037&longitude=121.473701&templates[]=main_template&templates[]=favourable_template&templates[]=svip_template&terminal=h5",
-        withCredentials:false
-    });
+    // let result = await http({
+    //   method: "get",
+    //   url:
+    //     "/restapi/shopping/v2/entries?latitude=31.23037&longitude=121.473701&templates[]=main_template&templates[]=favourable_template&templates[]=svip_template&terminal=h5",
+    //     withCredentials:false
+    // });
 
-    this.banner = result;
+    // this.banner = result;
     let autoPlayResource = await http({
       method: "get",
       url:
         "/restapi/shopping/v2/banners?consumer=1&type=1&latitude=31.230378&longitude=121.473657",
         withCredentials:false
     });
-    console.log('xxxxxxxxxxxxxxxxxxxxx', autoPlayResource)
+    //获取banner 菜系
+    getCookStyle().then(res => {
+      this.banner = res.data.cookingStyleArr
+    })
+    .catch(err => {
+      Toast(err)
+    })
     this.autolist = autoPlayResource;
 
     //获取店家数据
