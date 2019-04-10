@@ -32,7 +32,6 @@ export default {
     BannerItem
   },
   data() {
-    console.log('banner', this.banner)
     return {
       bannerOne: [],
       num: "",

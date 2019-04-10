@@ -30,7 +30,7 @@
 //暂且写静态的,滚动事件后面处理,
 //当前页面进行网络数据请求，将banner图的数据传递给
 //swiper组件
-import {getCookStyle} from '@/api/home'
+import {getCookStyle, getShop} from '@/api/home'
 import { Toast } from 'mint-ui';
 import {mapState} from 'vuex';
 import http from "utils/http";
@@ -44,6 +44,11 @@ import restaurantData from '@/mock/resList.json'
 export default {
   computed:{
   ...mapState(['city'])
+  },
+  components: {
+    SwipeList,
+    AutoList,
+    restaurantlist
   },
   data() {
     return {
@@ -62,6 +67,9 @@ export default {
       this.$router.push("/cities")
     }
   },
+  updated() {
+    console.log(22)
+  },
   mounted() {
     let count = 8;
     //声明bscroll
@@ -73,39 +81,57 @@ export default {
         threshold: 50
       }
     });
-    console.log('restaurantData', restaurantData)
-    //监听 pullingUp 触发加载更多
-    bscroll.on("pullingUp", () => {
-      // let result = await axios({
-      //   method: "get",
-      //   url:
-      //     "/restapi/shopping/v3/restaurants?latitude=40.00917&longitude=116.352978&offset=" +
-      //     count +
-      //     "&limit=8&extras[]=activities&extras[]=tags&extra_filters=home&rank_id=&terminal=h5",
-      //      withCredentials:false
+        // 获取店铺列表
+    getShop().then(res => {
+      console.log('tres', res.data);
+      this.restaurantlist = res.data;
+      let restaurantlist = res.data
+      // //监听 pullingUp 触发加载更多
+      // bscroll.on("pullingUp", () => {
+      //   if (!!restaurantlist) {
+      //     for (let i = 0;i < restaurantlist.length; i++) {
+      //       this.restaurantlist.push(restaurantlist[i]);
+      //       this.$nextTick(() => {
+      //         bscroll.refresh();
+      //         bscroll.finishPullUp();
+      //       })
+      //     }  
+      //   } else {
+      //         Toast({
+      //           message: "到底了~",
+      //           position: "bottom",
+      //           duration: 1000
+      //         });
+      //       }
+
       // });
-      if (!!restaurantData) {
-        this.restaurantlist.push(...restaurantData.items);
-        console.log(this.restaurantlist);
+    })
+    .catch(err => {
+      Toast(err)
+    })
+    let restaurantlist = this.restaurantlist 
+      bscroll.on("pullingUp", () => {
+        console.log(333)
+        if (!!restaurantlist ) {
+          console.log('restaurantlist.length', restaurantlist.length)
+          for (let i = 0;i < restaurantlist.length; i++) {
+            console.log(77)
+            this.restaurantlist.push(restaurantlist[i]);
+            this.$nextTick(() => {
+              bscroll.refresh();
+              bscroll.finishPullUp();
+            })
+          }  
+        } else {
+          console.log(44)
+              Toast({
+                message: "到底了~",
+                position: "bottom",
+                duration: 1000
+              });
+            }
 
-        this.$nextTick(() => {
-          bscroll.refresh();
-          bscroll.finishPullUp();
-        });
-      } else {
-        Toast({
-          message: "到底了~",
-          position: "bottom",
-          duration: 1000
-        });
-      }
-    });
-  },
-
-  components: {
-    SwipeList,
-    AutoList,
-    restaurantlist
+      });
   },
   async beforeCreate() {
    var keys = document.cookie.match(/[^ =;]+(?=\=)/g);
@@ -113,14 +139,6 @@ export default {
 					for(var i = keys.length; i--;)
 						document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString()
 				}
-    // let result = await http({
-    //   method: "get",
-    //   url:
-    //     "/restapi/shopping/v2/entries?latitude=31.23037&longitude=121.473701&templates[]=main_template&templates[]=favourable_template&templates[]=svip_template&terminal=h5",
-    //     withCredentials:false
-    // });
-
-    // this.banner = result;
     let autoPlayResource = await http({
       method: "get",
       url:
@@ -129,13 +147,12 @@ export default {
     });
     //获取banner 菜系
     getCookStyle().then(res => {
-      this.banner = res.data.cookingStyleArr
+      this.banner = res.data[0].cookingStyleArr
     })
     .catch(err => {
       Toast(err)
     })
     this.autolist = autoPlayResource;
-
     //获取店家数据
     // let restaurantSource = await axios({
     //   method: "get",
@@ -143,7 +160,6 @@ export default {
     //     "/restapi/shopping/v3/restaurants?latitude=31.230378&longitude=121.473657&offset=0&limit=8&extras[]=activities&extras[]=tags&extra_filters=home&rank_id=&terminal=h5",
     //     withCredentials:false
     // });
-    this.restaurantlist = restaurantData.items;
   }
 };
 </script>

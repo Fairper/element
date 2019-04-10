@@ -1,6 +1,6 @@
 <template>
   <div>
-      <restaurantitem :item="item" v-for="(item, index) of this.restaurantList" :key="index"></restaurantitem>
+      <restaurantitem :item="item" :index="index" v-for="(item, index) of this.restaurantList" :key="index"></restaurantitem>
   </div>
 </template>
 
