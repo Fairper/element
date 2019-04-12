@@ -60,10 +60,11 @@ export default {
   },
   methods:{
     godetail(){
-      console.log('this.item.restaurant.id----------------', this.item.restaurant.id);
-      this.id = this.item.restaurant.id
+      // this.item.id
+      console.log('this.item.restaurant.id----------------', this.index);
+      // this.id = this.item.restaurant.id
       //路由携带id 进行跳转到详情页面
-      this.$router.push({path:'/detail',query:{id:this.id}})
+      this.$router.push({path:'/detail',query:{id:this.item.id, index: this.index}})
       
     }
       }

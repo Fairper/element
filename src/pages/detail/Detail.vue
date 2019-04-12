@@ -16,19 +16,18 @@
    <div>
        <div class="top">
            <div class="nav">
-                  <img class="img1" v-if="this.shopData.rst" :src="this.shopData.rst.image_path|replaceAutoImg" alt="">
-                  <img class="img2" v-if="this.shopData.rst" :src="this.shopData.rst.image_path|replaceAutoImg" alt=""> 
+                  <img class="img2" v-if="this.shopData" :src="shopImage[index]" alt=""> 
            </div>
            <div class="introduce">
-               <h2 v-if="this.shopData.rst">{{this.shopData.rst.name}}</h2>
-               <div><span v-if="this.shopData.rst">评价{{this.shopData.rst.rating}} </span>
-                <span v-if="this.shopData.rst">月售{{this.shopData.rst.recent_order_num}}单</span>
+               <h2 v-if="this.shopData.restrantName">{{this.shopData.restrantName}}</h2>
+               <div><span v-if="this.shopData" style="margin-right:10px;">评价 4.8</span>
+                <span v-if="this.shopData">月售4728单</span>
                 
                </div>
                <div>
                  
                </div>
-               <h3 v-if="this.shopData.rst">公告:{{this.shopData.rst.promotion_info}}</h3>
+               <h3 v-if="this.shopData">公告:无辣不欢系列，开启全新辣味盛宴！更有多种美食</h3>
            </div>
        </div>
        <div class="tab">
@@ -51,12 +50,14 @@
 
 <script>
 import http from "utils/http";
+import {getOneShop} from '@/api/detail.js'
 import diancan from "./diancan";
 import pinjia from "./pinjia";
 import shangjia from "./shangjia";
 import Bscroll from "better-scroll";
 import {mapState} from 'vuex'
-import shopData from '@/mock/shop.json'
+// import shopData from '@/mock/shop.json'
+import shopImage from '@/mock/shopImage.json'
 export default {
   data() {
     return {
@@ -64,7 +65,9 @@ export default {
       currentTab: "diancan",
       aaa: "",
       wholedate: null,
-      shopData: shopData
+      shopData: [],
+      index: null,
+      shopImage: []
     };
   },
     computed:{
@@ -76,6 +79,9 @@ export default {
       click: true,
       bounce:false
     });
+    this.shopImage = shopImage
+    this.index = this.$router.history.current.query.index;
+    console.log('index', this.shopImage[this.index])
   },
   async beforeCreate() {
     let id = this.$router.history.current.query.id;
@@ -86,6 +92,15 @@ export default {
     arr.forEach(element => {
       document.cookie = element;
     });
+    getOneShop({id: Number(id)}).then(res => {
+      if(!!res.data[0]) {
+        this.shopData = res.data[0]
+      }
+      console.log('ress', this.shopData)
+    })
+    .catch(err => {
+      Toast(err)
+    })
     // var url =
     //   "/pizza/shopping/restaurants/" +
     //   this.$router.history.current.query.id +
@@ -96,10 +111,10 @@ export default {
     //   url: url,
     //   withCredentials:true
     // });
-    if(!!shopData){
-      this.rst = shopData.rst;
-      console.log(' this.rst',  this.rst.name)
-    }
+    // if(!!shopData){
+    //   this.rst = shopData.rst;
+    //   console.log(' this.rst',  this.rst.name)
+    // }
     
   },
   methods: {

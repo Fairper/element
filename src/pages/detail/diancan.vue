@@ -7,7 +7,7 @@
           <img class="img" :src="item.image_path|replaceAutoImg" alt>
           <h2>{{item.name}}</h2>
           <span>{{item.tips}}</span>
-          <!-- <span>{{item.specfoods[0].price}}</span> -->
+          <span>{{item.specfoods[0].price}}</span>
         </li>
       </ul>
     </div>
@@ -20,32 +20,33 @@
             item:="item"
             v-for="(item,index) of menu"
           >
-            <span>{{item.name}}</span>
+            <span>{{item.kind}}</span>
           </li>
         </ul>
       </div>
       <div class="scroll_right">
         <div class="right_content">
           <div v-for="(item,index) of menu">
-            <p class="top_name" ref="index">{{item.name}}</p>
-            <div class="right" v-for="(value,index) of item.foods">
+            <p class="top_name" ref="index">{{item.kind}}</p>
+            <div class="right">
               <div>
-                <img class="img1" :src="value.image_path|replaceAutoImg" alt>
+                <img class="img1" src="https://fuss10.elemecdn.com/4/55/faebb053a6f4a112cb8099bfcf137jpeg.jpeg?imageMogr/format/webp/thumbnail/!140x140r/gravity/Center/crop/140x140/" alt>
               </div>
               <div class="price_list">
-                <span class="caiming">{{value.name}}</span>
-                <span>{{value.tips}}</span>
-                <span class="description">{{value.description}}</span>
+                <span class="caiming">{{item.name}}</span>
+                <!-- <span>{{value.tips}}</span> -->
+                <span class="description">{{item.description}}</span>
                 <div class="shop">
-                  <span class="jiage">¥{{value.specfoods[0].price}}</span>
+                  <span class="jiage">¥{{item.sellPrice}}</span>
                   <div class="jisuan">
                     <span
-                      @touchstart="reduce(index,value)"
+                      @touchstart="reduce(index,item)"
                       :class="status[index]?'visi':'hide'"
-                      :id="value.virtual_food_id"
+                      :id="item.sn"
                     >-</span>
+                    <!-- :id="value.virtual_food_id" -->
                     <span :class="status[index]?'visi':'hide'">{{numbers[index] || number}}</span>
-                    <span @touchstart="add(index,value)" :id="value.virtual_food_id">+</span>
+                    <span @touchstart="add(index,item)" :id="item.sn">+</span>
                   </div>
                 </div>
               </div>
@@ -61,10 +62,9 @@
 import Bscroll from "better-scroll";
 import Vue from "vue";
 export default {
-  props: {
-    wholedate: Object
-  },
+  props: ['wholedate'],
   data() {
+    console.log('wholedate', this.wholedate)
     return {
       Wholedate: null,
       Recommend: null,
@@ -83,11 +83,14 @@ export default {
   },
   watch: {
     wholedate: function(val) {
-      console.log("vallll", val);
+      this.Wholedate = val
+      this.dataUpdata();
     }
   },
-  mounted() {
+  created() {
     this.dataUpdata();
+  },
+  mounted() {
     var bscroll = new Bscroll("#scroll", {
       probeType: 1,
       click: true,
@@ -108,15 +111,7 @@ export default {
     dataUpdata() {
       this.Wholedate = this.wholedate || "";
       if (!!this.Wholedate) {
-        this.menu = this.Wholedate.menu;
-        if (this.Wholedate.recommend[0] || this.Wholedate.recommend[1]) {
-          this.Recommend =
-            this.Wholedate.recommend[0] || this.Wholedate.recommend[1];
-        }
-        console.log('this.Recommend', this.Wholedate)
-        if (!!this.Recommend) {
-          this.itemss = this.Recommend.items;
-        }
+        this.menu = this.Wholedate.cookList;
       }
     },
     check_show(index) {
@@ -126,30 +121,29 @@ export default {
       this.bscroll2.scrollToElement(this.$refs.index[this.index], 500, true, 0);
     },
     add(index, value1) {
-      console.log("click");
       var num = this.numbers[index] || this.number;
       num++;
       this.index1 = index;
       Vue.set(this.status, index, true);
       Vue.set(this.numbers, index, num);
-
       var a = this.total.findIndex((value, index, arr) => {
-        return value.id == value1.virtual_food_id;
+        return value.id == value1.sn;
+        // virtual_food_id
       });
-      console.log(a);
       if (a === -1) {
         var obj = {
-          id: value1.virtual_food_id,
+          id: value1.sn,
+          // virtual_food_id
           name: value1.name,
           num: this.numbers[index],
-          price: value1.specfoods[0].price,
-          img: value1.image_path
+          price: value1.sellPrice,
+          img: "https://fuss10.elemecdn.com/4/55/faebb053a6f4a112cb8099bfcf137jpeg.jpeg?imageMogr/format/webp/thumbnail/!140x140r/gravity/Center/crop/140x140/"
         };
+        console.log('obj', obj)
         this.total.push(obj);
       } else {
         this.total[a].num = this.numbers[index];
       }
-      console.log(this.total);
       //this.total  是数组 里面存储着多个对象 对象存储价格 文字等数据
       this.$store.dispatch("addToCar", this.total);
 
@@ -190,7 +184,8 @@ export default {
       }
       Vue.set(this.numbers, index, num);
       var iIndex = this.total.findIndex((value, index, arr) => {
-        return value.id == value1.virtual_food_id;
+        return value.id == value1.sn;
+        // virtual_food_id
       });
       this.total[iIndex].num = this.numbers[index];
       this.$store.dispatch("addToCar", this.total);

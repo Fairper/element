@@ -5,7 +5,7 @@
             <div class="select-single">
                <span @click="selected(index)" class="iconfont" :class="(select[index])?'active':''">&#xe60a;</span>
             </div>
-            <img :src="item.img|replaceAutoImg" alt="">
+            <img :src="item.img" alt="">
             <div class="des">
                  {{ item.name}}</p>
                <div class="num"><span>X{{item.num}}</span> </div>

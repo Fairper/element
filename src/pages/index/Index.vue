@@ -88,36 +88,16 @@ export default {
       this.restaurantlist = res.data;
       this.cache = res.data;
       let restaurantlist = res.data
-      // //监听 pullingUp 触发加载更多
-      // bscroll.on("pullingUp", () => {
-      //   if (!!restaurantlist) {
-      //     for (let i = 0;i < restaurantlist.length; i++) {
-      //       this.restaurantlist.push(restaurantlist[i]);
-      //       this.$nextTick(() => {
-      //         bscroll.refresh();
-      //         bscroll.finishPullUp();
-      //       })
-      //     }  
-      //   } else {
-      //         Toast({
-      //           message: "到底了~",
-      //           position: "bottom",
-      //           duration: 1000
-      //         });
-      //       }
-
-      // });
     })
     .catch(err => {
       Toast(err)
     })
+          // //监听 pullingUp 触发加载更多
       bscroll.on("pullingUp", () => {
         console.log(this.restaurantlist ,'this.restaurantlist ', this.cache)
-        if (!!this.restaurantlist ) {
+        if (!!this.cache ) {
           console.log('restaurantlist.length', this.cache.length)
-          // for (let i = 0;i < this.cache.length; i++) {
-            // console.log(77)
-            // this.restaurantlist.push(this.cache[i]);
+            this.restaurantlist.push(...this.cache);
             this.$nextTick(() => {
               bscroll.refresh();
               bscroll.finishPullUp();
