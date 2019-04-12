@@ -55,7 +55,8 @@ export default {
       banner: [],
       autolist: [],
       restaurantlist: [],
-      test: Object
+      test: Object,
+      cache: []
     };
   },
   methods: {
@@ -85,6 +86,7 @@ export default {
     getShop().then(res => {
       console.log('tres', res.data);
       this.restaurantlist = res.data;
+      this.cache = res.data;
       let restaurantlist = res.data
       // //监听 pullingUp 触发加载更多
       // bscroll.on("pullingUp", () => {
@@ -109,19 +111,18 @@ export default {
     .catch(err => {
       Toast(err)
     })
-    let restaurantlist = this.restaurantlist 
       bscroll.on("pullingUp", () => {
-        console.log(333)
-        if (!!restaurantlist ) {
-          console.log('restaurantlist.length', restaurantlist.length)
-          for (let i = 0;i < restaurantlist.length; i++) {
-            console.log(77)
-            this.restaurantlist.push(restaurantlist[i]);
+        console.log(this.restaurantlist ,'this.restaurantlist ', this.cache)
+        if (!!this.restaurantlist ) {
+          console.log('restaurantlist.length', this.cache.length)
+          // for (let i = 0;i < this.cache.length; i++) {
+            // console.log(77)
+            // this.restaurantlist.push(this.cache[i]);
             this.$nextTick(() => {
               bscroll.refresh();
               bscroll.finishPullUp();
             })
-          }  
+          // }  
         } else {
           console.log(44)
               Toast({
