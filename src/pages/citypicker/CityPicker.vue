@@ -122,7 +122,7 @@ header
     flex 1
     height 100%
     margin-top .2rem
-
+    overflow scroll
     .dw {
         height: 0.4rem;
         padding: 0 0.2rem;

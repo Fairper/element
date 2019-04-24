@@ -1,5 +1,5 @@
 <template>
-<div id="scroll">
+<div id="scroll" style="overflow:scroll;">
   <div>
     <div class="top">
       <div @click="goCity()" class="location">{{city}}</div>
@@ -12,12 +12,12 @@
     <!-- 两个轮播图 -->
     <auto-list :autolist="autolist" ></auto-list>
       <h2>---推荐商家---</h2>
-      <ul class="menu_list">
+      <!-- <ul class="menu_list">
         <li>综合排序</li>
         <li>距离最近</li>
         <li>品质联盟</li>
         <li>筛选</li>
-      </ul>
+      </ul> -->
       <!-- 商家 -->
     <restaurantlist :restaurantlist="restaurantlist"></restaurantlist>
   </div>

@@ -13,7 +13,7 @@
       
    </div>
 <div class="scroll">
-   <div>
+   <div style="overflow:scroll;">
        <div class="top">
            <div class="nav">
                   <img class="img2" v-if="this.shopData" :src="shopImage[index]" alt=""> 
@@ -25,15 +25,15 @@
                 
                </div>
                <div>
-                 
+                  
                </div>
                <h3 v-if="this.shopData">公告:无辣不欢系列，开启全新辣味盛宴！更有多种美食</h3>
            </div>
        </div>
        <div class="tab">
            <div><p @click="click_now('diancan')" :class="{'active':currentTab=='diancan'}">点餐</p></div>
-           <div><p @click="click_now('pinjia')" :class="{'active':currentTab=='pinjia'}">评价</p></div>
-           <div><p @click="click_now('shangjia')" :class="{'active':currentTab=='shangjia'}">商家</p></div>
+           <!-- <div><p @click="click_now('pinjia')" :class="{'active':currentTab=='pinjia'}">评价</p></div>
+           <div><p @click="click_now('shangjia')" :class="{'active':currentTab=='shangjia'}">商家</p></div> -->
        </div>
        <keep-alive>
         <diancan   :wholedate="shopData"  v-if="currentTab=='diancan'" :is="currentTab" keep-alive></diancan>
@@ -229,12 +229,11 @@ h2 {
 .tab {
     height: 0.4rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     position relative
     z-index 9
     background-color white
     &>div {
-        width: 33.3%;
         text-align: center;
         height: 0.4rem;
 

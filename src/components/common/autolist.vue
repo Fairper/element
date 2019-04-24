@@ -24,7 +24,6 @@ export default {
   watch:{
    autolist(){
      this.banlist = this.autolist||[];
-     console.log(this.banlist, 'this.autolist')
    }
   }
 };

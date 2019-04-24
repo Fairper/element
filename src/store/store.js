@@ -34,21 +34,29 @@ export default new Vuex.Store({
         },
         recordUser({commit}, data){
             commit('setUserInfo', data)
-				},
-				logout({commit}){
-					commit('removeUserInfo', '')
-				}
+        },
+        logout({commit}){
+            commit('removeUserInfo', '')
+        }
     },
     mutations:{
-			setUserInfo (state, info) {
-				state.userInfo = info
-			}, 
-			removeUserInfo (state) {
-				state.userInfo = null
-			},
-			changeCity(state,pickedCity){
-				state.city = pickedCity
-			},
+        clearCartInfo(state) {
+            state.All = false
+            state.carPro = []
+            state.selectNum = 0
+            state.totalNum = 0
+            state.totalPrice = 0
+            state.totalPrice1 = 0
+        },
+        setUserInfo (state, info) {
+            state.userInfo = info
+        }, 
+        removeUserInfo (state) {
+            state.userInfo = null
+        },
+        changeCity(state,pickedCity){
+            state.city = pickedCity
+        },
       addFirst(state,total){
 				state.carPro = total;
 				console.log(78979879)

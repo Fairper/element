@@ -11,7 +11,9 @@
 
       <div class="main">
          <List @cancelAll="cancelAll"></List>
-         
+         <div v-if="totalNum === 0">
+            <p>购物车暂无商品，去逛一逛吧～</p>
+         </div>
       </div>      
       <div class="select">
          <div class="selectAll">
@@ -21,7 +23,7 @@
          <div class="totalPrice">
             合计<span>￥{{toFixed}}</span>
          </div>
-         <div class="goToClear">
+         <div class="goToClear" @click="goOver">
             去结算(<span>{{selectNum}}</span>)
          </div>
       </div>
@@ -29,26 +31,86 @@
 </template>
 
 <script>
- import List from "./List"
- import {mapState,mapGetters} from "vuex"
-
+import List from "./List"
+import {mapState,mapGetters} from "vuex"
+import { MessageBox, Toast } from 'mint-ui';
+import {addSuccessOrder, addCancelOrder} from '@/api/order.js'
 export default{
   components:{
     List
   },
   data(){
     return {
-      cancel:true
+      cancel:true,
+      // 0 为订单取消 1为订单提交成功
+      orderStatus: 0
     }
   },
   computed:{
     ...mapState(["All","selectNum","carPro","totalNum"]),
     ...mapGetters(["toFixed"])
   },
+  mounted () {
+     console.log('xxxxxx', this.toFixed, this.carPro)
+  },
   methods:{
+    goOver () {
+      var cancelBtn = document.getElementsByClassName('mint-msgbox-cancel')
+      console.log('cancelBtn', cancelBtn)
+      var time = this.getTime()
+      var obj = JSON.parse(JSON.stringify(this.carPro))
+      obj.map(item => {
+         item.time = time
+      })
+      MessageBox.confirm('确定提交订单?').then(res => {
+         if(res == 'confirm') {
+            this.orderStatus = 1
+            addSuccessOrder(obj).then(res => {
+               if(res.data.ret === true) {
+                  Toast('订单提交成功')
+                  this.$store.commit('clearCartInfo')
+               } else {
+                  Toast(res.data.data.msg)
+               }
+            }).catch(err => {
+               Toast(err)
+            })
+         } 
+      })
+      .catch(() => {
+         MessageBox.confirm('确定取消订单?').then(action => {
+            this.orderStatus = 0
+            addCancelOrder(obj).then(res => {
+               console.log(res.data.ret, 'resttttttttttt')
+               if(res.data.ret === true) {
+                  Toast('订单取消成功')
+               } else {
+                  Toast(res.data.data.msg)
+               }
+            }).catch(err => {
+               Toast(err)
+            })
+         }).catch(action => {
+            Toast(err)
+         })
+      })
+    },
     goback(){
       this.$router.go(-1)
     },
+    getTime () {
+      var date = new Date()
+      var Y = date.getFullYear()
+      var M = date.getMonth() + 1
+      var D = date.getDate() - 1
+      if (D === 0) {
+         D = 31
+         M = M - 1
+      }
+      M = M < 10 ? '0' + M : M
+      D = D < 10 ? '0' + D : D
+      return Y + '-' + M + '-' + D
+   },
     selectAll(){
        var fromCartTotalPrice = 0;
        if (!this.All) {
@@ -59,6 +121,7 @@ export default{
        this.$store.dispatch("changeAll",{flag:!this.All,fromCartTotalPrice})
     },
     cancelAll(status){
+       console.log('status', status)
       this.cancel = status;
     }
   }

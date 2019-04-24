@@ -12,7 +12,7 @@
       </ul>
     </div>
     <div class="main">
-      <div class="scroll_left">
+      <!-- <div class="scroll_left">
         <ul class="left_content">
           <li
             :class="{'active':index==active}"
@@ -23,14 +23,14 @@
             <span>{{item.kind}}</span>
           </li>
         </ul>
-      </div>
-      <div class="scroll_right">
+      </div> -->
+      <div class="scroll_right" style="overflow:scroll;margin: 0 auto;">
         <div class="right_content">
-          <div v-for="(item,index) of menu">
+          <div v-for="(item,index) of menu" style="margin: 25px 0;">
             <p class="top_name" ref="index">{{item.kind}}</p>
             <div class="right">
               <div>
-                <img class="img1" src="https://fuss10.elemecdn.com/4/55/faebb053a6f4a112cb8099bfcf137jpeg.jpeg?imageMogr/format/webp/thumbnail/!140x140r/gravity/Center/crop/140x140/" alt>
+                <img class="img1" src="https://fuss10.elemecdn.com/e/1a/a78b0c9c8af015ffd8006bb39c595jpeg.jpeg?imageMogr/format/webp/thumbnail/!140x140r/gravity/Center/crop/140x140/" alt>
               </div>
               <div class="price_list">
                 <span class="caiming">{{item.name}}</span>
@@ -96,10 +96,10 @@ export default {
       click: true,
       scrollX: true
     });
-    var bscroll3 = new Bscroll(".scroll_left", {
-      probeType: 1,
-      click: true
-    });
+    // var bscroll3 = new Bscroll(".scroll_left", {
+    //   probeType: 1,
+    //   click: true
+    // });
 
     this.bscroll2 = new Bscroll(".scroll_right", {
       probeType: 1,
@@ -118,9 +118,11 @@ export default {
       this.active = index;
       this.index = index;
       console.log(this.$refs.index[this.index]);
-      this.bscroll2.scrollToElement(this.$refs.index[this.index], 500, true, 0);
+      this.bscroll2.scrollToElement(this.$refs.index[this.index], 500, true, true);
+      // '<p class="top_name" ref="index">热菜</p>'
     },
     add(index, value1) {
+      console.log('indexxxx', index, value1)
       var num = this.numbers[index] || this.number;
       num++;
       this.index1 = index;
@@ -137,13 +139,17 @@ export default {
           name: value1.name,
           num: this.numbers[index],
           price: value1.sellPrice,
-          img: "https://fuss10.elemecdn.com/4/55/faebb053a6f4a112cb8099bfcf137jpeg.jpeg?imageMogr/format/webp/thumbnail/!140x140r/gravity/Center/crop/140x140/"
+          kind: value1.kind,
+          desc: value1.description,
+          priority: value1.priority,
+          img: "https://fuss10.elemecdn.com/e/1a/a78b0c9c8af015ffd8006bb39c595jpeg.jpeg?imageMogr/format/webp/thumbnail/!140x140r/gravity/Center/crop/140x140/"
         };
         console.log('obj', obj)
         this.total.push(obj);
       } else {
         this.total[a].num = this.numbers[index];
       }
+
       //this.total  是数组 里面存储着多个对象 对象存储价格 文字等数据
       this.$store.dispatch("addToCar", this.total);
 

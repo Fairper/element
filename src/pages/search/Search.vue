@@ -21,23 +21,17 @@
     <div v-show="!showsearch">
        <p v-show="this.restaurants&&this.restaurants.length==0">搜索{{this.search}}</p>
       <ul class="restaurants">
-        <li v-for="item of this.restaurants">
-          <img class="small_img" :src="item.image_path|replaceAutoImg" alt="">
+        <li v-for="(item, i) of this.restaurants" :key="i">
+          <img class="small_img" :src="shopImgList[i]" alt="">
           <div class="neirong">
           <div class="middle" v-if="item">
-              <span class="miaoshu">{{item.name}}</span>
-              <span v-for="value of item.tags">{{value.name}}</span>
+              <span class="miaoshu">{{item.restrantName}}</span>
+              <span v-for="value of tags">{{value.name}}</span>
           </div>
-            <span>评分{{item.rating}}</span>
+            <span>评分{{rating[i]}}</span>
             </div>
         </li>
       </ul>
-       <ul class="wordss">
-        <li v-for="value in this.wordsList">
-         <i class="iconfont sousuo_icon">&#xe513;</i>
-          <p>{{value}}</p>
-        </li>
-      </ul> 
     </div>
     </div>
 </div>
@@ -55,6 +49,8 @@
 import Shop from "pages/search/Shop";
 import http from "utils/http";
 import Bscroll from "better-scroll";
+import {getShop} from '@/api/home'
+import shopImg from '@/mock/shopImage.json'
 export default {
   data() {
     return {
@@ -64,7 +60,10 @@ export default {
       wordsList: [],
       restaurants: [],
       isclickSearch: false,
-      shopList: []
+      shopList: [],
+      shopImgList: [],
+      tags: [{name:"蜂鸟", name_color: "2395FF"}],
+      rating:[4.7,4.8,4.9,3.9,4.0,5.0,4.8,3.7,3.4,3.8]
     };
   },
   components: {
@@ -78,6 +77,7 @@ export default {
         threshold: 50
       }
     });
+    this.shopImgList = shopImg
   },
   methods: {
     back () {
@@ -91,42 +91,22 @@ export default {
       }
       //进行http请求
       if (this.search != "") {
-        let result = await http({
-          method: "get",
-          url:
-            "/restapi/shopping/v1/typeahead?kw=" +
-            this.search +
-            "&latitude=31.230378&longitude=121.473657&city_id=1"
-        });
-        console.log(result);
-        this.wordsList = result.words || [];
-        console.log(this.wrodList);
-        this.restaurants = result.restaurants;
+        //    // 获取店铺列表
+        let search = this.search
+        console.log('search', search)
+        getShop().then(res => {
+          console.log('tres', res.data);
+          // this.restaurants = res.data;
+          this.restaurants = res.data.filter(item => {
+            if (item.restrantName.toLowerCase().includes(search.toLowerCase())){
+              return item
+            }
+          })
+        })
+        .catch(err => {
+          Toast(err)
+        })
       }
-    },
-    // async search_shop() {
-    //   if (this.search) {
-    //     this.isclickSearch = true;
-    //     //进行数据请求
-    //     console.log(this.search);
-    //     let result = await http({
-    //       method: "get",
-    //       url:
-    //         "/restapi/shopping/v2/restaurants/search?offset=0&limit=15&keyword=" +
-    //         this.search +
-    //         "&latitude=31.230378&longitude=121.473657&search_item_type=3&is_rewrite=1&extras[]=activities&extras[]=coupon&terminal=h5"
-    //     });
-    //        //  if (result.inside&&result.inside[0].restaurant_with_foods) {
-    //     if (result.inside&&result.inside[0]) {
-    //       this.shopList = result.inside[0].restaurant_with_foods|| result.inside[1].restaurant_with_foods;
-    //     }
-    //     console.log(this.shopList);
-    //   }
-    // }
-  },
-  watch: {
-    search() {
-     
     }
   },
   async beforeCreate() {

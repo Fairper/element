@@ -49,7 +49,6 @@ export default {
     index: Number
   },
   data() {
-    console.log('iiiiiii', this.item)
     return{
      id:"",
      shopImage: []
@@ -60,9 +59,6 @@ export default {
   },
   methods:{
     godetail(){
-      // this.item.id
-      console.log('this.item.restaurant.id----------------', this.index);
-      // this.id = this.item.restaurant.id
       //路由携带id 进行跳转到详情页面
       this.$router.push({path:'/detail',query:{id:this.item.id, index: this.index}})
       
